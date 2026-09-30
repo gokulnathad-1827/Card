@@ -1,7 +1,7 @@
 // src/api/client.js
 import { profileData as fallbackProfile } from '../data/profile';
 
-const API_BASE = '/api';
+const API_BASE = (import.meta.env.VITE_API_URL || '/api').replace(/\/$/, '');
 
 /**
  * Helper to handle fetch responses & auth headers
@@ -14,8 +14,10 @@ async function fetchAPI(endpoint, options = {}) {
     ...(options.headers || {})
   };
 
+  const targetUrl = endpoint.startsWith('http') ? endpoint : `${API_BASE}${endpoint}`;
+
   try {
-    const res = await fetch(`${API_BASE}${endpoint}`, {
+    const res = await fetch(targetUrl, {
       ...options,
       headers
     });
